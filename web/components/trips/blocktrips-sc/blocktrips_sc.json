@@ -1,0 +1,111 @@
+{
+  "address": "Eu6oXy1qR4xBfxNphKzeBMA41tT3EycJRs7wVNCNSnDN",
+  "metadata": {
+    "name": "blocktrips_sc",
+    "version": "0.1.0",
+    "spec": "0.1.0",
+    "description": "Created with Anchor"
+  },
+  "instructions": [
+    {
+      "name": "initialize",
+      "discriminator": [
+        175,
+        175,
+        109,
+        31,
+        13,
+        152,
+        155,
+        237
+      ],
+      "accounts": [
+        {
+          "name": "payer",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "trip",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "accommodation_business",
+          "type": "pubkey"
+        },
+        {
+          "name": "date_of_departure",
+          "type": "string"
+        },
+        {
+          "name": "end_date",
+          "type": "string"
+        },
+        {
+          "name": "price",
+          "type": "f64"
+        }
+      ]
+    }
+  ],
+  "accounts": [
+    {
+      "name": "Trip",
+      "discriminator": [
+        181,
+        162,
+        236,
+        3,
+        69,
+        140,
+        211,
+        173
+      ]
+    }
+  ],
+  "types": [
+    {
+      "name": "Trip",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "review",
+            "type": "string"
+          },
+          {
+            "name": "traveler",
+            "type": "pubkey"
+          },
+          {
+            "name": "accommodation_business",
+            "type": "pubkey"
+          },
+          {
+            "name": "is_for_sale",
+            "type": "bool"
+          },
+          {
+            "name": "price",
+            "type": "f64"
+          },
+          {
+            "name": "date_of_departure",
+            "type": "string"
+          },
+          {
+            "name": "end_date",
+            "type": "string"
+          }
+        ]
+      }
+    }
+  ]
+}
