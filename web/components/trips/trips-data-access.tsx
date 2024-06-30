@@ -63,6 +63,16 @@ export function useTripsProgramAccount({ account }: { account: PublicKey }) {
     queryFn: () => program.account.trip.fetch(account),
   });
 
+  const setPriceMutation = useMutation({
+    mutationKey: ['trips', 'set', { cluster, account }],
+    mutationFn: (value: number) =>
+      program.methods.setPrice(value).accounts({ trip: account }).rpc(),
+    onSuccess: (tx) => {
+      transactionToast(tx);
+      return accountQuery.refetch();
+    },
+  });
+
   const closeMutation = useMutation({
     mutationKey: ['trips', 'close', { cluster, account }],
     mutationFn: () =>
@@ -76,5 +86,6 @@ export function useTripsProgramAccount({ account }: { account: PublicKey }) {
   return {
     accountQuery,
     closeMutation,
+    setPriceMutation,
   };
 }

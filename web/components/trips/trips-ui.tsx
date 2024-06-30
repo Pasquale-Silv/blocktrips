@@ -77,6 +77,7 @@ function TripsCard({ account }: { account: PublicKey }) {
   const {
     accountQuery,
     closeMutation,
+    setPriceMutation,
   } = useTripsProgramAccount({ account });
 
   const price = useMemo(
@@ -142,6 +143,26 @@ function TripsCard({ account }: { account: PublicKey }) {
               // onClick={() => func()}
             >
               Some Function
+            </button>
+            <button
+              className="btn btn-xs lg:btn-md btn-outline"
+              onClick={() => {
+                const value = window.prompt(
+                  'Set new price value to:',
+                  price.toString() ?? '0'
+                );
+                if (
+                  !value ||
+                  parseInt(value) === price ||
+                  isNaN(parseInt(value))
+                ) {
+                  return;
+                }
+                return setPriceMutation.mutateAsync(parseInt(value));
+              }}
+              disabled={setPriceMutation.isPending}
+            >
+              Set a new price for this trip
             </button>
           </div>
           <div className="text-center space-y-4">

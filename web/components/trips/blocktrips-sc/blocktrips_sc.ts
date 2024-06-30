@@ -84,6 +84,40 @@ export type BlocktripsSc = {
           "type": "f64"
         }
       ]
+    },
+    {
+      "name": "setPrice",
+      "discriminator": [
+        16,
+        19,
+        182,
+        8,
+        149,
+        83,
+        72,
+        181
+      ],
+      "accounts": [
+        {
+          "name": "trip",
+          "writable": true
+        },
+        {
+          "name": "initializer",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "systemProgram",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "price",
+          "type": "f64"
+        }
+      ]
     }
   ],
   "accounts": [
