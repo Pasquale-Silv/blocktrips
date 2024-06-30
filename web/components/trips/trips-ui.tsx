@@ -76,6 +76,7 @@ export function TripsList() {
 function TripsCard({ account }: { account: PublicKey }) {
   const {
     accountQuery,
+    closeMutation,
   } = useTripsProgramAccount({ account });
 
   const price = useMemo(
@@ -98,6 +99,16 @@ function TripsCard({ account }: { account: PublicKey }) {
     [accountQuery.data?.endDate]
   );
 
+  const isForSale = useMemo(
+    () => accountQuery.data?.isForSale ?? 0,
+    [accountQuery.data?.isForSale]
+  );
+
+  const traveler = useMemo(
+    () => accountQuery.data?.traveler ?? "",
+    [accountQuery.data?.traveler]
+  );
+
   return accountQuery.isLoading ? (
     <span className="loading loading-spinner loading-lg"></span>
   ) : (
@@ -108,14 +119,23 @@ function TripsCard({ account }: { account: PublicKey }) {
             Accommodation Business: {accommodationBusiness.toString()}
           </h3>
           <h2 className="card-title justify-center text-3xl">
-            Date of departure: {dateOfDeparture}, type: {typeof(dateOfDeparture)}, len: {dateOfDeparture.length}
+            Date of departure: {dateOfDeparture}
           </h2>
           <h2 className="card-title justify-center text-3xl">
-            End Date: {endDate}, type: {typeof(endDate)}, len: {endDate.length}
+            End Date: {endDate}
           </h2>
-          <h2 className="card-title justify-center text-3xl">
+          <h2 className="card-title justify-center text-5xl">
             Trip's price: {price} SOL
           </h2>
+          {isForSale ? (
+            <h2 className="card-title justify-center text-3xl">
+              This Trip is still "For Sale"
+            </h2>
+          ) : (
+            <h2 className="card-title justify-center text-3xl">
+              Traveler: {traveler.toString()}
+            </h2>
+          )}
           <div className="card-actions justify-around">
             <button
               className="btn btn-xs lg:btn-md btn-outline"
@@ -131,6 +151,22 @@ function TripsCard({ account }: { account: PublicKey }) {
                 label={ellipsify(account.toString())}
               />
             </p>
+            <button
+              className="btn btn-xs btn-secondary btn-outline"
+              onClick={() => {
+                if (
+                  !window.confirm(
+                    'Are you sure you want to close/eliminate this trip account?'
+                  )
+                ) {
+                  return;
+                }
+                return closeMutation.mutateAsync();
+              }}
+              disabled={closeMutation.isPending}
+            >
+              Close Trip
+            </button>
           </div>
         </div>
       </div>

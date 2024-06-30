@@ -14,6 +14,31 @@ export type BlocktripsSc = {
   },
   "instructions": [
     {
+      "name": "close",
+      "discriminator": [
+        98,
+        165,
+        201,
+        177,
+        108,
+        65,
+        206,
+        96
+      ],
+      "accounts": [
+        {
+          "name": "payer",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "trip",
+          "writable": true
+        }
+      ],
+      "args": []
+    },
+    {
       "name": "initialize",
       "discriminator": [
         175,
