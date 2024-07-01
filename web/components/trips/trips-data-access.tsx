@@ -2,8 +2,8 @@
 
 import { getTripsProgram, getTripsProgramId } from './blocktrips-sc/trips-exports';
 import { Program } from '@coral-xyz/anchor';
-import { useConnection } from '@solana/wallet-adapter-react';
-import { Cluster, Keypair, PublicKey } from '@solana/web3.js';
+import { useConnection, useWallet } from '@solana/wallet-adapter-react';
+import { Cluster, Connection, Keypair, LAMPORTS_PER_SOL, PublicKey, SystemProgram, Transaction, TransactionInstruction, TransactionMessage, VersionedTransaction } from '@solana/web3.js';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { useMemo } from 'react';
 import toast from 'react-hot-toast';
@@ -55,6 +55,8 @@ export function useTripsProgram() {
 
 export function useTripsProgramAccount({ account }: { account: PublicKey }) {
   const { cluster } = useCluster();
+  const { connection } = useConnection();
+  const wallet = useWallet();
   const transactionToast = useTransactionToast();
   const { program, accounts } = useTripsProgram();
 
@@ -73,6 +75,38 @@ export function useTripsProgramAccount({ account }: { account: PublicKey }) {
     },
   });
 
+  const buyFunction = async (travelerBuyer: PublicKey, accommodation_business: PublicKey, amount: number) => {
+      const txn1 = await program.methods.buy(travelerBuyer).accounts({ trip: account }).rpc();
+      console.log("Successfully bought the Trip!");
+      try {
+        console.log("Transferring SOL...");
+        const { transaction, latestBlockhash } = await createTransaction({
+          publicKey: travelerBuyer,
+          destination: accommodation_business,
+          amount: amount,
+          connection,
+        });
+        console.log("2) Transferring SOL...");
+
+        // Send transaction and await for signature
+        const signature = await wallet.sendTransaction(transaction, connection);
+
+        // Send transaction and await for signature
+        await connection.confirmTransaction(
+          { signature, ...latestBlockhash },
+          'confirmed'
+        );
+
+        console.log("Your transaction signature:", signature);
+        transactionToast(signature);
+        return accountQuery.refetch();
+      } catch (error: unknown) {
+        console.log('error', `Transaction failed! ${error}`);
+
+        return accountQuery.refetch();
+      }
+  }
+
   const closeMutation = useMutation({
     mutationKey: ['trips', 'close', { cluster, account }],
     mutationFn: () =>
@@ -87,5 +121,50 @@ export function useTripsProgramAccount({ account }: { account: PublicKey }) {
     accountQuery,
     closeMutation,
     setPriceMutation,
+    buyFunction,
+  };
+}
+
+
+// Function for creating the Transaction for transferring SOL
+async function createTransaction({
+  publicKey,
+  destination,
+  amount,
+  connection,
+}: {
+  publicKey: PublicKey;
+  destination: PublicKey;
+  amount: number;
+  connection: Connection;
+}): Promise<{
+  transaction: VersionedTransaction;
+  latestBlockhash: { blockhash: string; lastValidBlockHeight: number };
+}> {
+  // Get the latest blockhash to use in our transaction
+  const latestBlockhash = await connection.getLatestBlockhash();
+
+  // Create instructions to send, in this case a simple transfer
+  const instructions = [
+    SystemProgram.transfer({
+      fromPubkey: publicKey,
+      toPubkey: destination,
+      lamports: amount * LAMPORTS_PER_SOL,
+    }),
+  ];
+
+  // Create a new TransactionMessage with version and compile it to legacy
+  const messageLegacy = new TransactionMessage({
+    payerKey: publicKey,
+    recentBlockhash: latestBlockhash.blockhash,
+    instructions,
+  }).compileToLegacyMessage();
+
+  // Create a new VersionedTransaction which supports legacy and v0
+  const transaction = new VersionedTransaction(messageLegacy);
+
+  return {
+    transaction,
+    latestBlockhash,
   };
 }
