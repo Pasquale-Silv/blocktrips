@@ -21,9 +21,12 @@ export function TripsCreate() {
 
   return (
         <>
-            <input type="date" placeholder='Date of departure' onChange={(e) => setDateOfDeparture(e.target.value)} />
-            <input type="date" placeholder='End date of the trip' onChange={(e) => setEndDate(e.target.value)} />
-            <input type="number" placeholder='Price' onChange={(e) => setPrice(parseFloat(e.target.value))} />
+            <label htmlFor="dod" className='block text-sm font-medium leading-6 text-gray-900'>Date of Departure</label>
+            <input type="date" name='dod' placeholder='Date of departure' onChange={(e) => setDateOfDeparture(e.target.value)} className='block w-full rounded-md border-0 py-1.5 text-gray-500 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6'/>
+            <label htmlFor="enddate" className='block text-sm font-medium leading-6 text-gray-900'>End date of the trip</label>
+            <input type="date" name='enddate' placeholder='End date of the trip' onChange={(e) => setEndDate(e.target.value)} className='block w-full rounded-md border-0 py-1.5 text-gray-500 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6'/>
+            <label htmlFor="price" className='block text-sm font-medium leading-6 text-gray-900'>Price</label>
+            <input type="number" name='price' placeholder='Price' onChange={(e) => setPrice(parseFloat(e.target.value))} className='block w-full rounded-md border-0 py-1.5 text-gray-500 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6'/>
             <button
                 className="btn btn-xs lg:btn-md btn-primary"
                 onClick={() => initialize(Keypair.generate(), accommodation_business, dateOfDeparture, endDate, price)}
@@ -116,34 +119,28 @@ function TripsCard({ account }: { account: PublicKey }) {
     <div className="card card-bordered border-base-300 border-4 text-neutral-content">
       <div className="card-body items-center text-center">
         <div className="space-y-6">
-          <h3 className="card-title justify-center">
+          <h3 className="card-title justify-center text-indigo-600">
             Accommodation Business: {accommodationBusiness.toString()}
           </h3>
-          <h2 className="card-title justify-center text-3xl">
+          <h2 className="card-title justify-center text-3xl text-indigo-600">
             Date of departure: {dateOfDeparture}
           </h2>
-          <h2 className="card-title justify-center text-3xl">
+          <h2 className="card-title justify-center text-3xl text-indigo-600">
             End Date: {endDate}
           </h2>
-          <h2 className="card-title justify-center text-5xl">
+          <h2 className="card-title justify-center text-5xl text-indigo-600">
             Trip's price: {price} SOL
           </h2>
           {isForSale ? (
-            <h2 className="card-title justify-center text-3xl">
+            <h2 className="card-title justify-center text-3xl text-indigo-600">
               This Trip is still "For Sale"
             </h2>
           ) : (
-            <h2 className="card-title justify-center text-3xl">
+            <h2 className="card-title justify-center text-3xl text-indigo-600">
               Traveler: {traveler.toString()}
             </h2>
           )}
           <div className="card-actions justify-around">
-            <button
-              className="btn btn-xs lg:btn-md btn-outline"
-              // onClick={() => func()}
-            >
-              Some Function
-            </button>
             <button
               className="btn btn-xs lg:btn-md btn-outline"
               onClick={() => {

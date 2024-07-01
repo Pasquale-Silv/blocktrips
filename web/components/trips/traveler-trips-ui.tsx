@@ -120,16 +120,16 @@ function TripsTravelerCard({ account }: { account: PublicKey }) {
             <div className="card card-bordered border-base-300 border-4 text-neutral-content">
             <div className="card-body items-center text-center">
                 <div className="space-y-6">
-                <h3 className="card-title justify-center">
+                <h3 className="card-title justify-center text-indigo-600">
                     Accommodation Business: {accommodationBusiness.toString()}
                 </h3>
-                <h2 className="card-title justify-center text-3xl">
+                <h2 className="card-title justify-center text-3xl text-indigo-600">
                     Date of departure: {dateOfDeparture}
                 </h2>
-                <h2 className="card-title justify-center text-3xl">
+                <h2 className="card-title justify-center text-3xl text-indigo-600">
                     End Date: {endDate}
                 </h2>
-                <h2 className="card-title justify-center text-5xl">
+                <h2 className="card-title justify-center text-5xl text-indigo-600">
                     Trip's price: {price} SOL
                 </h2>
                 <div className="card-actions justify-around">

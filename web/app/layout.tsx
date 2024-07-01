@@ -12,7 +12,8 @@ export const metadata = {
 const links: { label: string; path: string }[] = [
   { label: 'Account', path: '/account' },
   { label: 'Clusters', path: '/clusters' },
-  { label: 'Counter Program', path: '/counter' },
+  { label: 'Trips Business', path: '/trips/create' },
+  { label: 'Trips Traveler', path: '/trips/traveler' },
 ];
 
 export default function RootLayout({

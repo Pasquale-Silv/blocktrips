@@ -16,7 +16,7 @@ export default function TripsFeature() {
       <AppHero
         title="Trips"
         subtitle={
-          'Create a new account by clicking the "Create" button. The state of a account is stored on-chain and can be manipulated by calling the program\'s methods.'
+          'Create a new Trip account by clicking the "Create Trip" button. The state of a Trip account is stored on-chain and can be manipulated by calling the program\'s methods.'
         }
       >
         <p className="mb-6">
