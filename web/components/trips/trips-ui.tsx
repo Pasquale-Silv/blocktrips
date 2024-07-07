@@ -38,7 +38,9 @@ export function TripsCreate() {
 }
 
 export function TripsList() {
+  const { publicKey } = useWallet();
   const { accounts, getProgramAccount } = useTripsProgram();
+  const accountsAccomBusiness = accounts.data?.filter((account) => account.account.accommodationBusiness.toString() == publicKey?.toString())
 
   if (getProgramAccount.isLoading) {
     return <span className="loading loading-spinner loading-lg"></span>;
@@ -55,11 +57,11 @@ export function TripsList() {
   }
   return (
     <div className={'space-y-6'}>
-      {accounts.isLoading ? (
-        <span className="loading loading-spinner loading-lg"></span>
-      ) : accounts.data?.length ? (
+      {accountsAccomBusiness === undefined ? (
+        <p>No Trips...</p>
+      ) : accountsAccomBusiness.length ? (
         <div className="grid md:grid-cols-2 gap-4">
-          {accounts.data?.map((account) => (
+          {accountsAccomBusiness.map((account) => (
             <TripsCard
               key={account.publicKey.toString()}
               account={account.publicKey}
@@ -131,61 +133,63 @@ function TripsCard({ account }: { account: PublicKey }) {
           <h2 className="card-title justify-center text-5xl text-indigo-600">
             Trip's price: {price} SOL
           </h2>
-          {isForSale ? (
+          { isForSale && traveler.toString() == "11111111111111111111111111111111" ? (
+          <>
             <h2 className="card-title justify-center text-3xl text-indigo-600">
               This Trip is still "For Sale"
             </h2>
+            <div className="card-actions justify-around">
+              <button
+                className="btn btn-xs lg:btn-md btn-outline"
+                onClick={() => {
+                  const value = window.prompt(
+                    'Set new price value to:',
+                    price.toString() ?? '0'
+                  );
+                  if (
+                    !value ||
+                    parseInt(value) === price ||
+                    isNaN(parseInt(value))
+                  ) {
+                    return;
+                  }
+                  return setPriceMutation.mutateAsync(parseInt(value));
+                }}
+                disabled={setPriceMutation.isPending}
+              >
+                Set a new price for this trip
+              </button>
+            </div>
+            <div className="text-center space-y-4">
+              <p>
+                <ExplorerLink
+                  path={`account/${account}`}
+                  label={ellipsify(account.toString())}
+                />
+              </p>
+              <button
+                className="btn btn-xs btn-secondary btn-outline"
+                onClick={() => {
+                  if (
+                    !window.confirm(
+                      'Are you sure you want to close/eliminate this trip account?'
+                    )
+                  ) {
+                    return;
+                  }
+                  return closeMutation.mutateAsync();
+                }}
+                disabled={closeMutation.isPending}
+              >
+                Close Trip
+              </button>
+            </div>
+          </>
           ) : (
             <h2 className="card-title justify-center text-3xl text-indigo-600">
               Traveler: {traveler.toString()}
             </h2>
           )}
-          <div className="card-actions justify-around">
-            <button
-              className="btn btn-xs lg:btn-md btn-outline"
-              onClick={() => {
-                const value = window.prompt(
-                  'Set new price value to:',
-                  price.toString() ?? '0'
-                );
-                if (
-                  !value ||
-                  parseInt(value) === price ||
-                  isNaN(parseInt(value))
-                ) {
-                  return;
-                }
-                return setPriceMutation.mutateAsync(parseInt(value));
-              }}
-              disabled={setPriceMutation.isPending}
-            >
-              Set a new price for this trip
-            </button>
-          </div>
-          <div className="text-center space-y-4">
-            <p>
-              <ExplorerLink
-                path={`account/${account}`}
-                label={ellipsify(account.toString())}
-              />
-            </p>
-            <button
-              className="btn btn-xs btn-secondary btn-outline"
-              onClick={() => {
-                if (
-                  !window.confirm(
-                    'Are you sure you want to close/eliminate this trip account?'
-                  )
-                ) {
-                  return;
-                }
-                return closeMutation.mutateAsync();
-              }}
-              disabled={closeMutation.isPending}
-            >
-              Close Trip
-            </button>
-          </div>
         </div>
       </div>
     </div>
