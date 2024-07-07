@@ -11,6 +11,8 @@ import { useCluster } from '../cluster/cluster-data-access';
 import { useAnchorProvider } from '../solana/solana-provider';
 import { useTransactionToast } from '../ui/ui-layout';
 
+const anchor = require('@project-serum/anchor');
+
 export function useTripsProgram() {
   const { connection } = useConnection();
   const { cluster } = useCluster();
@@ -76,33 +78,18 @@ export function useTripsProgramAccount({ account }: { account: PublicKey }) {
   });
 
   const buyFunction = async (travelerBuyer: PublicKey, accommodation_business: PublicKey, amount: number) => {
-      const txn1 = await program.methods.buy(travelerBuyer).accounts({ trip: account }).rpc();
-      console.log("Successfully bought the Trip!");
+    console.log("Buying the trip...");
+    const amountToTransfer = new anchor.BN(amount * LAMPORTS_PER_SOL);
+    console.log("Trasferring ", amountToTransfer);
+    const signature = await program.methods.buy(travelerBuyer, amountToTransfer).accounts({ trip: account, from: travelerBuyer, to: accommodation_business }).rpc();
       try {
-        console.log("Transferring SOL...");
-        const { transaction, latestBlockhash } = await createTransaction({
-          publicKey: travelerBuyer,
-          destination: accommodation_business,
-          amount: amount,
-          connection,
-        });
-        console.log("2) Transferring SOL...");
-
-        // Send transaction and await for signature
-        const signature = await wallet.sendTransaction(transaction, connection);
-
-        // Send transaction and await for signature
-        await connection.confirmTransaction(
-          { signature, ...latestBlockhash },
-          'confirmed'
-        );
-
+        
+        console.log("Successfully bought the Trip!");
         console.log("Your transaction signature:", signature);
         transactionToast(signature);
         return accountQuery.refetch();
       } catch (error: unknown) {
         console.log('error', `Transaction failed! ${error}`);
-
         return accountQuery.refetch();
       }
   }

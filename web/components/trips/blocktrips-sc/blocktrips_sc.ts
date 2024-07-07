@@ -31,19 +31,27 @@ export type BlocktripsSc = {
           "writable": true
         },
         {
-          "name": "initializer",
+          "name": "from",
           "writable": true,
           "signer": true
         },
         {
           "name": "systemProgram",
           "address": "11111111111111111111111111111111"
+        },
+        {
+          "name": "to",
+          "writable": true
         }
       ],
       "args": [
         {
           "name": "traveler",
           "type": "pubkey"
+        },
+        {
+          "name": "price",
+          "type": "u64"
         }
       ]
     },
