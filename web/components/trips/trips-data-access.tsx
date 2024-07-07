@@ -81,9 +81,8 @@ export function useTripsProgramAccount({ account }: { account: PublicKey }) {
     console.log("Buying the trip...");
     const amountToTransfer = new anchor.BN(amount * LAMPORTS_PER_SOL);
     console.log("Trasferring ", amountToTransfer);
-    const signature = await program.methods.buy(travelerBuyer, amountToTransfer).accounts({ trip: account, from: travelerBuyer, to: accommodation_business }).rpc();
       try {
-        
+        const signature = await program.methods.buy(travelerBuyer, amountToTransfer).accounts({ trip: account, from: travelerBuyer, to: accommodation_business }).rpc();
         console.log("Successfully bought the Trip!");
         console.log("Your transaction signature:", signature);
         transactionToast(signature);
@@ -93,6 +92,16 @@ export function useTripsProgramAccount({ account }: { account: PublicKey }) {
         return accountQuery.refetch();
       }
   }
+
+  const sellTripFunction = useMutation({
+    mutationKey: ['trips', 'sell', { cluster, account }],
+    mutationFn: (value: number) =>
+      program.methods.putUpForSale(value).accounts({ trip: account }).rpc(),
+    onSuccess: (tx) => {
+      transactionToast(tx);
+      return accountQuery.refetch();
+    },
+  });
 
   const closeMutation = useMutation({
     mutationKey: ['trips', 'close', { cluster, account }],
@@ -109,6 +118,7 @@ export function useTripsProgramAccount({ account }: { account: PublicKey }) {
     closeMutation,
     setPriceMutation,
     buyFunction,
+    sellTripFunction
   };
 }
 
