@@ -13,7 +13,7 @@ export default function DashboardFeature() {
       <AppHero title="Welcome to BlockTrips" subtitle="Start trading Trips." />
       <div className="max-w-xl mx-auto py-6 sm:px-6 lg:px-8 text-center">
         <div className="space-y-2">
-          <p>Here are some helpful links to get you started.</p>
+          <p>Here are some helpful links to get you started with your Trips.</p>
           {links.map((link, index) => (
             <div key={index}>
               <a
